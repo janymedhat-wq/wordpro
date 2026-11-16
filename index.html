@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Word Pro – A free, open-source word processor</title>
+<meta name="description" content="Free, open source, and always yours. A word processor.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%231b3a8a'/%3E%3Cstop offset='.5' stop-color='%232a5bd7'/%3E%3Cstop offset='1' stop-color='%237aa7ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='16' y='12' width='32' height='40' rx='5'/%3E%3Cpath d='M23 24h18M23 32h18M23 40h10'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--fg:#000;--sub:#7a7a7a;--muted:#9a9a9a;--panel:#eee;--line:#e2e2e2;--accent:#2a5bd7;--btn:#000;--btnfg:#fff;--bd:#dcdcdc;--li:#333}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111;--fg:#f4f4f4;--sub:#a0a0a0;--muted:#8a8a8a;--panel:#1b1b1b;--line:#2c2c2c;--accent:#7aa7ff;--btn:#f4f4f4;--btnfg:#111;--bd:#3a3a3a;--li:#ddd}}
+:root[data-theme="dark"]{--bg:#111;--fg:#f4f4f4;--sub:#a0a0a0;--muted:#8a8a8a;--panel:#1b1b1b;--line:#2c2c2c;--accent:#7aa7ff;--btn:#f4f4f4;--btnfg:#111;--bd:#3a3a3a;--li:#ddd}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--fg)}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+::selection{background:var(--accent);color:#fff}
+svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+.nav{display:flex;justify-content:space-between;align-items:center;padding:25px 46px 0;font-size:16px;line-height:20px}
+.nav-back{display:flex;align-items:center;gap:6px;color:var(--li);transition:opacity .15s}
+.nav-back:hover{opacity:.6}
+.nav-back svg{font-size:18px}
+.nav-date{color:#b5b5b5}
+
+.hero{text-align:center;padding-top:112px}
+.hero h1{margin:0;font-size:72px;line-height:75px;font-weight:700;letter-spacing:-.025em}
+.hero .sub{margin:14px 0 0;font-size:28px;line-height:36px;color:var(--sub);letter-spacing:-.005em}
+.buttons{display:flex;justify-content:center;gap:14px}
+.hero .buttons{margin-top:55px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:53px;border-radius:999px;font-size:15px;font-weight:500;white-space:nowrap;transition:transform .15s}
+.btn:hover{transform:scale(1.03)}
+.btn svg{font-size:20px}
+.btn-download{width:200px;background:var(--btn);color:var(--btnfg)}
+.btn-github{width:195px;border:1.5px solid var(--bd)}
+
+/* Screenshot slot: drop your <img> inside .hero-image */
+.hero-image{margin:48px auto 0;max-width:1300px;padding:0 24px;min-height:0}
+.hero-image img{width:100%;height:auto;display:block}
+
+.purpose{display:flex;margin-top:122px}
+.gallery{width:50%;display:flex;flex-direction:column;background:var(--panel)}
+.slot{position:relative;flex:1 1 0;min-height:260px;background:#fff;overflow:hidden}
+
+.slot::before{content:attr(data-label);position:absolute;inset:0;display:grid;place-items:center;font-size:14px;color:#8a8a8a}
+.slot svg{position:absolute;inset:0;width:100%;height:100%;display:block;font-family:'Inter',sans-serif}
+
+.info{width:50%;background:var(--panel);padding:73px 60px 73px 100px}
+.label{margin:0;font-size:13px;line-height:16px;font-weight:700;color:#8a8a8a}
+.info h2{margin:14px 0 0;font-size:24px;line-height:30px;font-weight:600;letter-spacing:-.01em}
+.copy{max-width:433px;margin-top:24px}
+.copy p{margin:0 0 20px;font-size:16px;line-height:22px;color:var(--muted)}
+.copy p:last-child{margin-bottom:0}
+.features{list-style:none;margin:50px 0 0;padding:0;max-width:420px}
+.features li{display:flex;align-items:center;height:42px;padding-left:11px;font-size:14px;color:var(--li);border-bottom:1px solid var(--line)}
+.features li:last-child{border-bottom:0}
+.features svg{font-size:26px;margin-right:25px;flex-shrink:0;color:var(--accent)}
+
+.footer{display:flex;align-items:center;justify-content:space-between;max-width:1440px;margin:0 auto;padding:114px 70px 110px 65px}
+.footer-brand{display:flex;align-items:center;gap:20px}
+.logo{width:79px;height:79px;border-radius:18px;background:var(--accent);color:#fff;display:grid;place-items:center}
+.logo svg{font-size:46px}
+.footer-brand span{font-size:30px;line-height:36px;font-weight:500;letter-spacing:-.01em}
+.legal{margin:0;padding:10px 20px;text-align:center;font-size:12px;line-height:16px;color:#b5b5b5;border-top:1px dotted var(--line)}
+
+@media (max-width:1100px){.hero h1{font-size:60px;line-height:64px}.hero .sub{font-size:24px}.info{padding:60px 40px 50px 50px}}
+@media (max-width:768px){
+.nav{padding:20px}
+.hero{padding-top:60px}
+.hero h1{font-size:calc((100vw - 50px)/8.75);line-height:1.02}
+.hero .sub{font-size:17.5px;line-height:22px}
+.hero .buttons{margin-top:40px}
+.buttons{flex-direction:column;align-items:center;gap:8px}
+.btn{height:45px;font-size:14px}.btn svg{font-size:17px}
+.btn-download,.btn-github{width:190px}.btn-github{border-width:1px}
+.hero-image{padding:0;margin-top:32px}
+.purpose{flex-direction:column;margin-top:35px}
+.gallery{width:100%}
+.slot{flex:none;height:calc(100vw*.5625);min-height:0}
+.info{width:100%;padding:42px 32px 40px 29px}
+.info h2{font-size:21px;line-height:26px}
+.copy{max-width:none;margin-top:21px}.copy p{font-size:14px;line-height:20px}
+.features{margin-top:40px;max-width:none}.features li{height:44px;padding-left:8px}.features svg{margin-right:20px}
+.footer{flex-direction:column;padding:60px 25px 80px}
+.footer-brand{flex-direction:column;gap:14px}
+.footer .buttons{margin-top:50px}
+}
+
+.slot+.slot{border-top:1px solid #e2e2e2}
+body,.info,.features li,.copy p,.sub,.gallery{transition:background-color .35s,color .35s,border-color .35s}
+.btn{transition:transform .15s,background-color .35s,color .35s,border-color .35s}
+.theme{position:relative;width:60px;height:32px;border-radius:999px;border:1.5px solid var(--bd);background:var(--panel);padding:0;cursor:pointer;transition:background-color .35s,border-color .35s}
+.theme:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.knob{position:absolute;top:3px;left:3px;width:23px;height:23px;border-radius:50%;background:var(--btn);color:var(--btnfg);display:grid;place-items:center;transition:transform .5s cubic-bezier(.68,-.4,.27,1.4),background-color .35s,color .35s}
+.knob svg{grid-area:1/1;font-size:14px;transition:transform .5s cubic-bezier(.34,1.56,.64,1),opacity .3s}
+.knob .moon{opacity:0;transform:rotate(-90deg) scale(.4)}
+:root[data-theme="dark"] .knob{transform:translateX(28px)}
+:root[data-theme="dark"] .knob .sun{opacity:0;transform:rotate(90deg) scale(.4)}
+:root[data-theme="dark"] .knob .moon{opacity:1;transform:none}
+.hero-image:empty::before{content:"Your screenshot goes here";display:grid;place-items:center;aspect-ratio:16/10;border:2px dashed var(--bd);border-radius:14px;color:var(--muted);font-size:14px}
+@media (max-width:768px){.hero-image:empty::before{margin:0 20px}}
+.csv .file{animation:fileIn 8s ease infinite}
+.csv .row{animation:rowIn 8s ease infinite both;animation-delay:calc(1.4s + var(--i)*.3s)}
+.csv .bar{transform-box:fill-box;transform-origin:left;animation:barGo 8s ease infinite}
+.csv .ok{animation:okIn 8s ease infinite}
+@keyframes fileIn{0%{transform:translateX(-30px);opacity:0}10%,28%{transform:none;opacity:1}38%,100%{transform:translateX(14px);opacity:0}}
+@keyframes rowIn{0%{opacity:0;transform:translateX(-10px)}6%{opacity:1;transform:none}80%{opacity:1}92%,100%{opacity:0}}
+@keyframes barGo{0%,8%{transform:scaleX(0)}34%,90%{transform:scaleX(1)}100%{transform:scaleX(1);opacity:0}}
+@keyframes okIn{0%,36%{opacity:0}42%,88%{opacity:1}96%,100%{opacity:0}}
+
+.btn-download{position:relative;overflow:hidden;isolation:isolate}
+.nums{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.nums i{position:absolute;font-style:normal;font-weight:600;color:var(--btnfg);opacity:0;transform:translateY(14px) scale(.4)}
+.nums i:nth-child(even){color:#4cc08a}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){.btn-download:hover .nums i{animation:numPop 1.1s cubic-bezier(.34,1.56,.64,1) infinite}}
+@keyframes numPop{0%{opacity:0;transform:translateY(14px) scale(.4)}25%{opacity:.5;transform:translateY(0) scale(1.2)}45%{opacity:.4;transform:scale(1)}80%{opacity:.4}100%{opacity:0;transform:translateY(-10px) scale(.9)}}
+.hero{position:relative;isolation:isolate}
+.strip{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.strip i{position:absolute;left:-25%;top:40px;width:150%;height:240px;opacity:.4;filter:blur(55px);transform:rotate(-9deg);background:linear-gradient(90deg,#02024a,#0a4fd8,#3cc8ff,#f55fc0,#ffb347,#ff5a1f,#f55fc0,#0a4fd8,#02024a);background-size:300% 100%;animation:strip 6s ease-in-out infinite alternate;will-change:transform,background-position}
+.strip i.thin{top:215px;height:16px;filter:blur(6px);opacity:.55;animation-duration:7s;animation-direction:alternate-reverse}
+:root[data-theme="dark"] .strip i:not(.thin){opacity:.5}
+@keyframes strip{from{background-position:0% 0;transform:rotate(-9deg) translateX(-12%) scaleY(.85)}to{background-position:100% 0;transform:rotate(-9deg) translateX(12%) scaleY(1.2)}}
+@media (max-width:768px){.strip i{top:20px;height:180px}.strip i.thin{top:170px}}
+@media (prefers-reduced-motion:reduce){.strip i{animation-duration:24s}}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.1em;margin-bottom:-.1em}
+.w>span{display:inline-block;transform:translateY(115%) rotate(4deg);animation:wordUp .9s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes wordUp{to{transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.hero .sub{animation:rise .8s .6s cubic-bezier(.2,.8,.2,1) both}
+.hero .buttons{animation:rise .8s .8s cubic-bezier(.2,.8,.2,1) both}
+.hero-image{animation:rise .9s 1s cubic-bezier(.2,.8,.2,1) both}
+.fl{position:absolute;font-weight:600;color:var(--accent);opacity:0;animation:floatUp var(--d,12s) linear infinite;animation-delay:var(--dl,0s)}
+@keyframes floatUp{0%{opacity:0;transform:translateY(40px) rotate(-4deg)}20%{opacity:.4}80%{opacity:.3}100%{opacity:0;transform:translateY(-140px) rotate(4deg)}}
+.rv.rv{opacity:0;transform:translateY(30px);transition:opacity .7s ease var(--rd,0s),transform .7s cubic-bezier(.2,.8,.2,1) var(--rd,0s),background-color .35s,color .35s,border-color .35s}
+.rv.in{opacity:1;transform:none}
+.gallery .rv.rv{opacity:1;transform:none}
+.gallery .slot.rv svg{clip-path:inset(0 100% 0 0);transition:clip-path 1s cubic-bezier(.7,0,.2,1) var(--rd,0s)}
+.gallery .slot.in svg{clip-path:inset(0 0 0 0)}
+.features li{cursor:default}
+.features li:hover{color:var(--accent)}
+.features svg{transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+.features li:hover svg{transform:scale(1.3) rotate(-8deg)}
+.btn-github:hover{border-color:var(--accent);color:var(--accent)}
+.logo{animation:bob 3.5s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-9px) rotate(-5deg)}}
+.prog{position:fixed;top:0;left:0;width:100%;height:3px;z-index:60;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,#0a4fd8,#f55fc0,#ffb347)}
+
+.demo{--mx:0;--my:0;position:relative;max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr minmax(0,2.4fr) 1fr;gap:20px;align-items:center;text-align:left;color:#1f2937;font-size:12px;line-height:1.35}
+.col{display:grid;gap:18px}
+.pnl{background:#fff;border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(20,60,40,.16),0 0 0 1px rgba(0,0,0,.05);translate:calc(var(--mx)*-10px) calc(var(--my)*-8px);transition:translate .3s ease-out;animation:pbob 7s ease-in-out infinite}
+.col>.pnl:nth-child(2){animation-delay:-3.5s}
+@keyframes pbob{50%{transform:translateY(-7px)}}
+.mon{background:#1c1c1e;border-radius:16px;padding:8px;box-shadow:0 30px 60px rgba(0,0,0,.28);transform:perspective(1200px) rotateY(calc(var(--mx)*4deg)) rotateX(calc(var(--my)*-3deg));transition:transform .15s ease-out}
+.win{background:#fff;border-radius:9px;overflow:hidden;display:flex;flex-direction:column}
+.ph{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;margin-bottom:10px}
+.lg2{width:22px;height:22px;border-radius:6px;background:#2a5bd7;color:#fff;display:grid;place-items:center}.lg2 svg{font-size:14px}
+.pt{display:flex;gap:4px;margin-bottom:10px;font-size:11px;color:#6b7280}.pt b{font-weight:500;padding:4px 8px;border-radius:6px}.pt .on{background:#eaf0ff;color:#1e44a8;font-weight:600}
+.ig{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ig button{display:grid;justify-items:center;gap:4px;padding:8px 2px;border:1px solid transparent;border-radius:10px;background:none;font:inherit;font-size:11px;color:#374151;cursor:pointer;transition:background .2s,transform .2s}
+.ig button svg{font-size:22px;color:#2a5bd7}.ig button:hover{background:#f3f4f6;transform:translateY(-2px)}.ig button.on{background:#eaf0ff;border-color:#a9c1ff}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;font-size:12px}
+#th{display:flex;gap:6px}#th button{width:18px;height:18px;border-radius:50%;border:2px solid #fff;background:var(--c);box-shadow:0 0 0 1px #d1d5db;padding:0;cursor:pointer;transition:transform .2s,box-shadow .2s}#th button.on{box-shadow:0 0 0 2px var(--c);transform:scale(1.15)}
+.demo select{font:inherit;font-size:11.5px;padding:4px 6px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;color:#1f2937}
+.sw{appearance:none;-webkit-appearance:none;width:34px;height:20px;border-radius:99px;background:#d1d5db;position:relative;transition:background .25s;margin:0;cursor:pointer;flex:none}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.sw:checked{background:#2a5bd7}.sw:checked::after{transform:translateX(14px)}
+.demo input[type=range]{accent-color:#2a5bd7;width:80px}.demo output{width:20px;text-align:right;font-weight:600}
+.apply{width:100%;margin-top:8px;padding:8px;border:0;border-radius:8px;background:#2a5bd7;color:#fff;font:inherit;font-weight:600;cursor:pointer;transition:transform .15s,background .2s}.apply:hover{transform:scale(1.02);background:#1e44a8}
+.ds{list-style:none;margin:0;padding:0}.ds li{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f3f4f6}.ds b{font-variant-numeric:tabular-nums}
+#spk{width:100%;height:50px;margin-top:8px}
+.chip{padding:4px 8px;border-radius:8px;background:#f3f4f6;font-size:11.5px}
+.pv{width:100%;border-collapse:collapse;margin-top:6px}.pv th,.pv td{padding:6px 8px;text-align:left}.pv th{background:#f3f4f6;font-weight:700}.pv th:last-child,.pv td:last-child{text-align:right}
+.pv .n{background:linear-gradient(90deg,rgba(42,91,215,.16) var(--w),transparent 0)}.pv .srt{cursor:pointer}.pv tr:hover td{background-color:#f9fafb}.pv .gt td{background:#dbe6ff;font-weight:700}
+.tb{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid #f0f0f0}.tb i{width:10px;height:10px;border-radius:50%}.tb b{margin-left:6px}
+.srch{margin-left:auto;padding:4px 10px;border-radius:8px;background:#f3f4f6;color:#9ca3af;font-size:11px}.auto{display:flex;align-items:center;gap:6px;font-weight:700;font-size:11px}
+.tabs,.sh{display:flex;gap:2px;padding:0 10px}.tabs{padding-top:4px;border-bottom:1px solid #eee}
+.tabs button,.sh button{border:0;background:none;font:inherit;padding:6px 10px;color:#4b5563;cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.tabs button.on,.sh button.on{color:#1e44a8;font-weight:600;border-color:#2a5bd7}
+.rib{display:flex;gap:4px;padding:8px 10px;background:#fafafa;border-bottom:1px solid #eee}
+.rib button{display:grid;justify-items:center;gap:3px;border:0;background:none;font:inherit;font-size:10.5px;color:#374151;padding:6px 12px;border-radius:8px;cursor:pointer;transition:background .2s,transform .2s}
+.rib button:hover{background:#e4ecff;transform:translateY(-2px)}.rib svg{font-size:20px;color:#2a5bd7}
+.fb{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid #eee}#nm{border:1px solid #e5e7eb;border-radius:6px;padding:2px 10px;min-width:54px;text-align:center}.fb b{color:#2a5bd7;font-style:italic}
+.views{min-height:290px}.v{display:none;animation:fi .35s}.v.on{display:block}#v-pivot,#v-empty{padding:12px}#v-pivot h4{margin:0 0 8px;font-size:13px}#v-empty{color:#9ca3af;min-height:290px;background:repeating-linear-gradient(#fff 0 27px,#eee 27px 28px)}
+@keyframes fi{from{opacity:0}}
+.body{display:grid;grid-template-columns:minmax(190px,.8fr) 1.4fr;gap:12px;padding:10px}
+#sheet-grid{border-collapse:collapse;width:100%;font-size:11.5px;align-self:start}#sheet-grid th{background:#f3f4f6;color:#9ca3af;font-weight:500;padding:3px 6px;border:1px solid #e5e7eb}
+#sheet-grid td{border:1px solid #e5e7eb;padding:4px 8px}#sheet-grid td[contenteditable]{text-align:right;cursor:text}#sheet-grid td:focus{outline:2px solid #2a5bd7;outline-offset:-2px;background:#eaf0ff}#sheet-grid .tot td{background:#f9fafb;font-weight:700;text-align:right}#sheet-grid .tot td:first-of-type{text-align:left}
+.cht{border:1px solid #e5e7eb;border-radius:calc(var(--r,12)*1px);padding:10px;background:#fff;transition:border-radius .2s}#cv{width:100%;height:auto;display:block}
+.gl{stroke:#e5e7eb;stroke-width:1}.tx{font-size:10px;fill:#9ca3af}.pl{font-size:11px;font-weight:700;fill:#fff;pointer-events:none}
+.pi{transition:transform .2s}.pi:hover{transform:scale(1.06)}.b,.bx,.dt{transition:opacity .2s}.b:hover,.bx:hover,.dt:hover{opacity:.7}
+.an .b{transform-box:fill-box;transform-origin:50% 100%;animation:gY .6s cubic-bezier(.2,.8,.2,1) both}.an .bx{transform-box:fill-box;transform-origin:0 50%;animation:gX .6s cubic-bezier(.2,.8,.2,1) both}
+.an .ln{stroke-dasharray:1;animation:dr .9s ease both}.an .ar{animation:fi .9s both}.an .dt{transform-box:fill-box;transform-origin:center;animation:pp .5s .5s both}.an .pi{animation:pw .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes gY{from{transform:scaleY(0)}}@keyframes gX{from{transform:scaleX(0)}}@keyframes dr{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}@keyframes pp{from{transform:scale(0)}}@keyframes pw{from{transform:scale(.4) rotate(-40deg);opacity:0}}
+.sh{align-items:center;border-top:1px solid #eee;background:#fafafa}#sb{margin-left:auto;color:#6b7280;font-size:11px}
+.lg{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:center;font-size:11px;color:#6b7280;margin-top:4px}.lg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.hint{grid-column:1/-1;text-align:center;color:#8a8a8a;font-size:13px;margin:6px 0 0}
+@media (max-width:980px){.demo{grid-template-columns:1fr;padding:0 14px}.mon{order:-1}.col{grid-template-columns:1fr 1fr;align-items:start}.pnl{translate:none}}
+@media (max-width:700px){.body{grid-template-columns:1fr}.col{grid-template-columns:1fr}.rib button{padding:6px 8px}.srch{display:none}}
+.features{max-width:540px}
+.features li{height:auto;align-items:flex-start;padding:14px 0 14px 11px}
+.features li svg{margin-top:1px}
+.features b{display:block;font-size:14px;font-weight:600;color:var(--fg);transition:color .35s}
+.features small{display:block;margin-top:4px;font-size:12.5px;line-height:19px;color:var(--muted);font-weight:400}
+.features li:hover b{color:var(--accent)}
+.note{max-width:540px;margin:28px 0 0;padding:16px 18px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:12.5px;line-height:19px;color:var(--muted)}
+.note b{color:var(--fg)}
+
+.hero .sub{font-size:22px;line-height:32px;max-width:760px;margin:16px auto 0}
+@media (max-width:768px){.hero h1{font-size:calc((100vw - 40px)/10.2)}.hero .sub{font-size:16.5px;line-height:23px;padding:0 20px}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:1100px;margin:90px auto 0;padding:0 24px;text-align:center}
+.st b{display:block;font-size:48px;line-height:56px;font-weight:700;letter-spacing:-.02em;background:linear-gradient(90deg,#0a4fd8,#f55fc0,#ffb347);-webkit-background-clip:text;background-clip:text;color:transparent}
+.st span{color:var(--sub);font-size:14px}
+@media (max-width:700px){.stats{grid-template-columns:1fr 1fr;margin-top:60px}.st b{font-size:36px}}
+
+svg.os{fill:currentColor;stroke:none}
+.btn-download{width:auto;min-width:200px;padding:0 26px}
+.os-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:22px;font-size:13px;color:var(--sub);animation:rise .8s .95s cubic-bezier(.2,.8,.2,1) both}
+.os-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;border:1.5px solid var(--bd);font-size:14px;font-weight:500;color:var(--fg);white-space:nowrap;transition:transform .15s,border-color .2s,color .2s,background-color .35s}
+.os-btn svg{font-size:17px}
+.os-btn:hover{transform:translateY(-2px);border-color:var(--accent);color:var(--accent)}
+.os-btn.cur{border-color:var(--accent)}
+.os-btn.soon{opacity:.6}
+.os-btn.soon::after{content:"Soon";font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--panel);color:var(--sub)}
+.footer .buttons{flex-wrap:wrap;justify-content:flex-end;max-width:640px}
+@media (max-width:768px){.btn-download{min-width:190px}.footer .buttons{justify-content:center}.footer .os-btn{width:190px;justify-content:center}}
+
+html{scroll-behavior:smooth}
+.cloud-link{margin:16px 0 0;font-size:13px;animation:rise .8s 1.05s cubic-bezier(.2,.8,.2,1) both}
+.cloud-link a{color:var(--sub);border-bottom:1px solid var(--bd);padding-bottom:1px;transition:color .2s,border-color .2s}.cloud-link a:hover{color:var(--accent);border-color:var(--accent)}
+.cloud{max-width:1100px;margin:130px auto 0;padding:0 24px;text-align:center;scroll-margin-top:30px}
+.cloud h2{font-size:40px;line-height:46px;letter-spacing:-.02em;margin:12px 0}
+.cloud .ap{color:var(--sub);max-width:660px;margin:0 auto;font-size:16px;line-height:24px}
+.plans{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px;text-align:left}
+.pc{position:relative;border:1.5px solid var(--line);border-radius:18px;padding:24px 20px;background:var(--bg)}
+.pc:hover{border-color:var(--accent)}
+.pc h3{margin:0;font-size:15px;font-weight:600}
+.pc .pr{margin:10px 0 4px;font-size:34px;line-height:40px;font-weight:700;letter-spacing:-.02em}.pc .pr small{font-size:13px;font-weight:500;color:var(--sub);letter-spacing:0}
+.pc p{margin:0 0 16px;color:var(--sub);font-size:13px;line-height:19px}
+.pc ul{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:13px;color:var(--li)}
+.pc li{display:flex;gap:8px;align-items:flex-start;line-height:18px}.pc li svg{font-size:15px;color:var(--accent);margin-top:2px;flex:none;stroke-width:2.2}
+.pc.hot{border-color:transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(135deg,#0a4fd8,#f55fc0,#ffb347) border-box}
+.pc .tag{position:absolute;top:-11px;right:18px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;color:#fff;background:linear-gradient(90deg,#0a4fd8,#f55fc0,#ffb347)}
+.pn{margin:16px 0 0;font-size:12.5px;color:var(--muted)}
+.rm{list-style:none;margin:70px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:left;position:relative}
+.rm::before{content:"";position:absolute;left:8px;right:8px;top:7px;height:2px;background:var(--line)}
+.rm li{position:relative;padding-top:30px}
+.rm li::before{content:"";position:absolute;top:0;left:0;width:16px;height:16px;border-radius:50%;background:var(--bg);border:2px solid var(--line)}
+.rm li.now::before{border-color:var(--accent);background:var(--accent);animation:pulse 2s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 45%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
+.rm b{display:block;font-size:14px}.rm em{font-style:normal;font-size:11px;font-weight:700;color:var(--accent);margin-left:8px}
+.rm span{display:block;margin-top:4px;color:var(--sub);font-size:13px;line-height:19px}
+.wl{position:relative;overflow:hidden;margin:80px auto 0;max-width:760px;padding:40px 34px;border-radius:26px;background:var(--panel);text-align:center;isolation:isolate}
+.wl::before{content:"";position:absolute;inset:-40%;z-index:-1;background:conic-gradient(from 0deg,#0a4fd8,#f55fc0,#ffb347,#0a4fd8);opacity:.14;filter:blur(60px);animation:wspin 14s linear infinite}
+@keyframes wspin{to{transform:rotate(360deg)}}
+.wl h3{margin:0;font-size:26px;letter-spacing:-.01em}
+.wl>p{margin:10px auto 0;max-width:460px;color:var(--sub);font-size:14px;line-height:21px}
+.wl form{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:24px}
+.wl input[type=email],.wl select{height:50px;border-radius:999px;border:1.5px solid var(--bd);background:var(--bg);color:var(--fg);font:inherit;font-size:16px;padding:0 20px;outline:none;transition:border-color .2s,background-color .35s,color .35s}
+.wl input:focus,.wl select:focus{border-color:var(--accent)}
+.wl .sel{grid-column:1/-1}
+.wl .go{height:50px;padding:0 26px;border:0;border-radius:999px;background:var(--btn);color:var(--btnfg);font:inherit;font-size:15px;font-weight:500;cursor:pointer;transition:transform .15s,opacity .2s}
+.wl .go:hover{transform:scale(1.03)}.wl .go:disabled{opacity:.6;cursor:default}
+.wl .msg{max-width:none;min-height:20px;margin:12px 0 0;font-size:13px;color:#e5484d}
+.wl .setup{max-width:none;margin:8px 0 0;font-size:12px;color:#b45309}
+.wl .done{display:none}.wl.ok form,.wl.ok .msg,.wl.ok>p,.wl.ok>h3,.wl.ok .setup{display:none}.wl.ok .done{display:block;animation:rise .6s both}
+.wl .done p{margin:10px 0 0;color:var(--sub);font-size:14px;line-height:22px}.wl .done b{color:var(--fg)}
+.bigck{width:64px;height:64px;color:var(--accent);margin-bottom:10px}.bigck path{stroke-dasharray:50;stroke-dashoffset:50;animation:ckd .7s .2s ease forwards}.bigck circle{stroke-dasharray:152;stroke-dashoffset:152;animation:ckd .7s ease forwards}
+@keyframes ckd{to{stroke-dashoffset:0}}
+@media (max-width:900px){.plans{grid-template-columns:1fr 1fr}.rm{grid-template-columns:1fr 1fr;row-gap:30px}.rm::before{display:none}}
+@media (max-width:600px){.plans{grid-template-columns:1fr}.cloud h2{font-size:30px;line-height:36px}.wl{padding:30px 20px}.wl form{grid-template-columns:1fr}.rm{grid-template-columns:1fr}}
+
+.wdoc .rib{flex-wrap:wrap;gap:2px}.wdoc .rib button{padding:7px 9px}.wdoc .rib svg{font-size:18px}.wdoc .rib button.on{background:#dbe6ff}.wdoc .rib .sp{width:1px;background:#e5e7eb;margin:4px 4px}
+.pgw{background:#eef0f3;padding:14px}
+#pg{background:#fff;min-height:300px;max-height:340px;overflow:auto;padding:30px 36px;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.12),0 8px 24px rgba(0,0,0,.06);outline:none;font-size:14px;line-height:1.65;color:#1f2937;font-family:'Inter',sans-serif}
+#pg h1{font-size:26px;line-height:1.2;margin:0 0 10px;letter-spacing:-.01em}#pg h2{font-size:19px;line-height:1.3;margin:16px 0 6px}#pg p{margin:0 0 10px}
+#pg blockquote{margin:12px 0;padding:4px 14px;border-left:3px solid #2a5bd7;color:#4b5563;font-style:italic}#pg ul,#pg ol{margin:0 0 10px;padding-left:22px}
+.wdoc .ig{grid-template-columns:1fr 1fr}.wdoc .ig button{font-size:12px}
+.cols{display:flex;gap:6px}.cols button{width:20px;height:20px;border-radius:50%;border:2px solid #fff;background:var(--c);box-shadow:0 0 0 1px #d1d5db;padding:0;cursor:pointer;transition:transform .2s}.cols button:hover{transform:scale(1.2)}
+.ring{display:flex;align-items:center;gap:12px;margin-top:10px}.ring svg{width:58px;height:58px;flex:none}.ring circle{fill:none;stroke-width:5}.ring .bg{stroke:#e5e7eb}.ring .fg{stroke:#2a5bd7;stroke-linecap:round;stroke-dasharray:163.4;stroke-dashoffset:163.4;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .4s}
+.ring small{color:#6b7280;line-height:1.4}
+.xb{display:grid;gap:6px}.xb button{display:flex;align-items:center;gap:8px;border:1px solid #e5e7eb;background:#fff;border-radius:10px;padding:8px 10px;font:inherit;font-size:12px;color:#374151;cursor:pointer;transition:background .2s,transform .2s,border-color .2s}.xb button:hover{background:#f3f4f6;transform:translateY(-1px);border-color:#a9c1ff}.xb svg{font-size:16px;color:#2a5bd7}
+.btn-download.soon{opacity:.6}
+
+/* smoother hero gradient: transform-only animation, blurred once */
+.strip i{left:-60%;width:220%;top:60px;height:260px;opacity:.5;filter:blur(64px);background:linear-gradient(90deg,#1d4ed8,#06b6d4,#8b5cf6,#ec4899,#f59e0b,#06b6d4,#1d4ed8);background-size:100% 100%;transform:translate3d(-14%,0,0) rotate(-8deg);animation:drift 22s ease-in-out infinite alternate;will-change:transform}
+.strip i.thin{top:250px;height:12px;filter:blur(7px);opacity:.8;animation:drift2 16s ease-in-out infinite alternate}
+:root[data-theme="dark"] .strip i:not(.thin){opacity:.55}
+@keyframes drift{from{transform:translate3d(-14%,0,0) rotate(-8deg)}to{transform:translate3d(14%,14px,0) rotate(-8deg)}}
+@keyframes drift2{from{transform:translate3d(14%,0,0) rotate(-8deg)}to{transform:translate3d(-14%,-10px,0) rotate(-8deg)}}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.38;will-change:transform}
+.o1{width:380px;height:380px;left:6%;top:-70px;background:#22d3ee;animation:orb1 20s ease-in-out infinite alternate}
+.o2{width:420px;height:420px;right:4%;top:30px;background:#a855f7;animation:orb2 24s ease-in-out infinite alternate}
+@keyframes orb1{to{transform:translate3d(130px,90px,0) scale(1.15)}}@keyframes orb2{to{transform:translate3d(-150px,60px,0) scale(.88)}}
+@media (max-width:768px){.strip i{top:30px;height:200px}.strip i.thin{top:200px}.orb{width:240px;height:240px}}
+/* smoother motion everywhere */
+body{animation:pageIn .9s ease both}
+@keyframes pageIn{from{opacity:0}}
+.w>span{animation:wordUp 1.1s cubic-bezier(.22,1,.36,1) forwards}
+.rv.rv{transform:translateY(36px);transition:opacity .9s cubic-bezier(.22,1,.36,1) var(--rd,0s),transform .9s cubic-bezier(.22,1,.36,1) var(--rd,0s),background-color .35s,color .35s,border-color .35s}
+.gallery .slot.rv svg{transition:clip-path 1.2s cubic-bezier(.65,0,.2,1) var(--rd,0s)}
+.mon,.pnl{transition:none}.mon{will-change:transform}
+.btn,.os-btn,.features li,.xb button,.ig button,.rib button{transition-timing-function:cubic-bezier(.22,1,.36,1)}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){animation:vtReveal .75s cubic-bezier(.65,0,.2,1) forwards}
+@keyframes vtReveal{from{clip-path:circle(0 at var(--tx,50%) var(--ty,0))}to{clip-path:circle(150vmax at var(--tx,50%) var(--ty,0))}}
+/* animated illustrations */
+@keyframes blink{50%{opacity:0}}.caret{animation:blink 1s steps(1) infinite}
+.pulseb{transform-box:fill-box;transform-origin:center;animation:pulseb 2.6s ease-in-out infinite}@keyframes pulseb{50%{transform:scale(1.14)}}
+.ring{animation:ringmove 8s ease-in-out infinite}
+@keyframes ringmove{0%,14%{transform:translateX(0)}20%,34%{transform:translateX(24px)}40%,54%{transform:translateX(48px)}60%,74%{transform:translateX(72px)}80%,94%{transform:translateX(96px)}100%{transform:translateX(0)}}
+.selb{transform-box:fill-box;transform-origin:left center;animation:selw 8s ease-in-out infinite}
+@keyframes selw{0%{transform:scaleX(0)}25%,80%{transform:scaleX(1)}95%,100%{transform:scaleX(0)}}
+.bul{animation:bulin 8s ease infinite}
+@keyframes bulin{0%,4%{opacity:0;transform:translateX(-12px)}14%,86%{opacity:1;transform:none}96%,100%{opacity:0}}
+.hl2{animation:hl2m 9s cubic-bezier(.6,0,.3,1) infinite}
+@keyframes hl2m{0%,18%{transform:translateY(0)}25%,43%{transform:translateY(38px)}50%,68%{transform:translateY(66px)}75%,93%{transform:translateY(94px)}100%{transform:translateY(0)}}
+.wr{transform-box:fill-box;transform-origin:left center;animation:wr 8s ease-in-out infinite;animation-delay:var(--d,0s)}
+@keyframes wr{0%,4%{transform:scaleX(0)}16%,86%{transform:scaleX(1)}96%,100%{transform:scaleX(0)}}
+.dash{stroke-dasharray:4 4;animation:march 1.4s linear infinite}@keyframes march{to{stroke-dashoffset:-16}}
+.mk{animation:mk 4s ease-in-out infinite alternate}@keyframes mk{to{transform:translateX(30px)}}
+.pgA,.pgB{animation:pgs 6s ease infinite}.pgB{animation-delay:-3s}
+@keyframes pgs{0%,40%{opacity:1}50%,90%{opacity:0}100%{opacity:1}}
+.pth{stroke-dasharray:1;stroke-dashoffset:1;animation:pdraw 6s ease infinite;animation-delay:var(--d,0s)}
+@keyframes pdraw{0%{stroke-dashoffset:1}22%,88%{stroke-dashoffset:0}100%{stroke-dashoffset:1}}
+.card4{transform-box:fill-box;transform-origin:center;animation:cpop 6s cubic-bezier(.34,1.56,.64,1) infinite;animation-delay:var(--d,0s)}
+@keyframes cpop{0%,8%{opacity:0;transform:scale(.86)}20%,88%{opacity:1;transform:none}100%{opacity:0;transform:scale(.96)}}
+.docp{animation:docp 2.4s ease-in-out infinite}@keyframes docp{50%{stroke-width:4}}
+
+.os-note{margin:12px 0 0;font-size:12.5px;color:var(--sub);animation:rise .8s 1s cubic-bezier(.22,1,.36,1) both}
+.unw{transform-box:fill-box;transform-origin:right center;animation:unw 8s ease-in-out infinite}
+@keyframes unw{0%,6%{transform:scaleX(1)}34%,86%{transform:scaleX(0)}96%,100%{transform:scaleX(1)}}
+.hl6{animation:hl6m 9s cubic-bezier(.6,0,.3,1) infinite}
+@keyframes hl6m{0%,18%{transform:translateY(0)}25%,43%{transform:translateY(28px)}50%,68%{transform:translateY(56px)}75%,93%{transform:translateY(84px)}100%{transform:translateY(0)}}
+.features small{font-size:13px;line-height:21px}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<symbol id="back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+<symbol id="dl" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
+<symbol id="gh" viewBox="0 0 24 24"><path d="M9 19c-4 1.3-4-2-6-2.5M15 21v-3.2c0-1 .1-1.5-.5-2.1 2.8-.3 5.5-1.4 5.5-6A4.7 4.7 0 0 0 18.700 6.400 4.400 4.400 0 0 0 18.600 3S17.500 2.700 15 4.400a12 12 0 0 0-6 0C6.500 2.700 5.400 3 5.400 3a4.400 4.400 0 0 0-.1 3.400A4.700 4.700 0 0 0 4 9.700c0 4.600 2.700 5.700 5.500 6-.6.600-.6 1.200-.5 2.100V21"/></symbol>
+<symbol id="grid" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 4v16M15 4v16"/></symbol>
+<symbol id="fx" viewBox="0 0 24 24"><path d="M14 4c-3 0-3 2-3.500 5L9 18c-.5 2.500-1.500 3-3 3M6 11h8M14 15l5 5M19 15l-5 5"/></symbol>
+<symbol id="chart" viewBox="0 0 24 24"><path d="M4 20V4M4 20h16"/><rect x="8" y="12" width="3" height="5"/><rect x="13" y="8" width="3" height="9"/></symbol>
+<symbol id="pivot" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M10 10v10M14 14l3 3 3-3"/></symbol>
+<symbol id="cond" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18"/><rect x="5" y="6" width="5" height="4" fill="currentColor" stroke="none" opacity=".4"/><rect x="14" y="14" width="5" height="4" fill="currentColor" stroke="none" opacity=".4"/></symbol>
+<symbol id="valid" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="6" rx="1.500"/><path d="M8 15l2.500 2.500L16 13M3 19h4"/></symbol>
+<symbol id="filter" viewBox="0 0 24 24"><path d="M4 5h16l-6 8v6l-4-2v-4z"/></symbol>
+<symbol id="freeze" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16" stroke-width="2.600"/></symbol>
+<symbol id="fill" viewBox="0 0 24 24"><rect x="4" y="4" width="8" height="8" rx="1"/><path d="M8 12v8M5 17l3 3 3-3"/><path d="M16 8h4M16 12h4" opacity=".5"/></symbol>
+<symbol id="find" viewBox="0 0 24 24"><circle cx="10.500" cy="10.500" r="6"/><path d="M15 15l5 5"/></symbol>
+<symbol id="import" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6zM14 3v5h5M12 11v6M9.500 14.500L12 17l2.500-2.500"/></symbol>
+<symbol id="name" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 11h6M7 14h3"/></symbol>
+<symbol id="note" viewBox="0 0 24 24"><path d="M4 5h16v11H10l-5 4v-4H4z"/></symbol>
+<symbol id="sheets" viewBox="0 0 24 24"><path d="M3 6h14v12H3zM17 9h4v12H7v-3"/></symbol>
+<symbol id="keys" viewBox="0 0 24 24"><rect x="2.500" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></symbol>
+<symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></symbol><symbol id="moon" viewBox="0 0 24 24"><path d="M20 14.500A8 8 0 0 1 9.500 4 8 8 0 1 0 20 14.500z"/></symbol><symbol id="fmt" viewBox="0 0 24 24"><path d="M4 19L10 5l6 14M6.5 14h7M18 7h3M19.5 7v9"/></symbol>
+<symbol id="pen" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"/></symbol>
+<symbol id="img" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 3 3-3 4 4"/></symbol>
+<symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3M12 15v2"/></symbol>
+<symbol id="save" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4M12 8v4l3 2"/></symbol>
+<symbol id="code" viewBox="0 0 24 24"><path d="M9 8l-5 4 5 4M15 8l5 4-5 4M13 6l-2 12"/></symbol>
+<symbol id="big" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h10M18 16v5M16 19l2 2 2-2"/></symbol>
+<symbol id="tech" viewBox="0 0 24 24"><path d="M5 10h11v5a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4zM16 11h1.5a2.5 2.5 0 0 1 0 5H16M8 3c0 1.5 2 1.500 2 3M12 3c0 1.5 2 1.5 2 3"/></symbol>
+<symbol id="os-win" viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></symbol>
+<symbol id="os-mac" viewBox="0 0 24 24"><path d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.9-1.99 1.57-2.987 1.57-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.572-2.27 1.206-2.98.804-.94 2.142-1.64 3.248-1.68.03.13.05.28.05.43zm4.565 15.71c-.03.07-.463 1.58-1.518 3.12-.945 1.34-1.94 2.71-3.43 2.71-1.517 0-1.9-.88-3.63-.88-1.698 0-2.302.91-3.67.91-1.377 0-2.332-1.26-3.428-2.8-1.287-1.82-2.323-4.63-2.323-7.28 0-4.28 2.797-6.55 5.552-6.55 1.448 0 2.675.95 3.6.95.865 0 2.222-1.01 3.902-1.01.613 0 2.886.06 4.374 2.19-.13.09-2.383 1.37-2.383 4.19 0 3.26 2.854 4.42 2.955 4.45z"/></symbol>
+<symbol id="os-linux" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2c-2.2 0-3.6 1.8-3.6 4.2 0 1.2.3 2.1.8 3C7.700 11 6.500 13.500 6.500 16c0 1.200.3 2 .8 2.600-.9.4-1.900 1.100-1.900 2 0 1 1.700 1.400 3.300 1.400 1.200 0 2-.2 2.700-.7.700.5 1.500.7 2.700.7 1.600 0 3.300-.4 3.300-1.400 0-.9-1-1.600-1.900-2 .5-.6.8-1.400.8-2.600 0-2.500-1.200-5-2.700-6.800.5-.9.8-1.800.8-3C15.600 3.800 14.200 2 12 2zM12 11.500c-1.800 0-3 2-3 4.300 0 1.700.9 3.200 3 3.200s3-1.500 3-3.200c0-2.300-1.200-4.300-3-4.300zM10.600 5.200a.6.6 0 1 0 1.200 0 .6.6 0 1 0-1.200 0zM12.400 5.200a.6.6 0 1 0 1.200 0 .6.6 0 1 0-1.200 0z"/></symbol>
+<symbol id="ck" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+<symbol id="doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 12h6M9 16h6"/></symbol>
+<symbol id="s-b" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zM7 12h7a3.5 3.5 0 0 1 0 7H7z"/></symbol>
+<symbol id="s-i" viewBox="0 0 24 24"><path d="M10 5h8M6 19h8M14 5l-4 14"/></symbol>
+<symbol id="s-u" viewBox="0 0 24 24"><path d="M7 4v7a5 5 0 0 0 10 0V4M5 20h14"/></symbol>
+<symbol id="s-ul" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.500 6h.01M4.500 12h.01M4.500 18h.01"/></symbol>
+<symbol id="s-ol" viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10M4 5l1.500-1v4M4 14h3l-3 3.500h3"/></symbol>
+<symbol id="s-al" viewBox="0 0 24 24"><path d="M4 6h16M4 10h10M4 14h16M4 18h10"/></symbol>
+<symbol id="s-ac" viewBox="0 0 24 24"><path d="M4 6h16M7 10h10M4 14h16M7 18h10"/></symbol>
+<symbol id="s-ar" viewBox="0 0 24 24"><path d="M4 6h16M10 10h10M4 14h16M10 18h10"/></symbol>
+<symbol id="s-undo" viewBox="0 0 24 24"><path d="M9 7L4 12l5 5M4 12h10a6 6 0 0 1 0 12"/></symbol>
+<symbol id="s-redo" viewBox="0 0 24 24"><path d="M15 7l5 5-5 5M20 12H10a6 6 0 0 0 0 12"/></symbol>
+<symbol id="s-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+<symbol id="s-h" viewBox="0 0 24 24"><path d="M5 5v14M19 5v14M5 12h14"/></symbol>
+<symbol id="s-layout" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 3v18M4 8h4"/></symbol>
+<symbol id="s-tbl" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M3 15h18M9 5v14M15 5v14"/></symbol>
+</defs>
+</svg>
+
+<nav class="nav">
+  <button class="theme" id="theme" type="button" aria-label="Toggle dark mode" aria-pressed="false"><span class="knob"><svg class="i sun"><use href="#sun"/></svg><svg class="i moon"><use href="#moon"/></svg></span></button>
+</nav>
+
+<header class="hero">
+  <div class="strip" aria-hidden="true"><b class="orb o1"></b><b class="orb o2"></b><i></i><i class="thin"></i></div>
+  <h1>Your words.<br>Your workflow.<br>Your document.</h1>
+  <p class="sub">A word processor for writing, formatting and sharing your documents. Free, open source, and always yours.</p>
+  <div class="buttons">
+    <a class="btn btn-download" data-os="auto" href="#"><svg class="i"><use href="#dl"/></svg><span class="dl-t">Download</span></a>
+    <a class="btn btn-github" data-gh href="#" target="_blank" rel="noopener"><svg class="i"><use href="#gh"/></svg>View on GitHub</a>
+  </div>
+  <div class="os-row" aria-label="Download for your system"><span>Download for</span><a class="os-btn" data-os="win" href="#"><svg class="i os"><use href="#os-win"/></svg>Windows</a><a class="os-btn" data-os="linux" href="#"><svg class="i os"><use href="#os-linux"/></svg>Linux</a></div>
+  <p class="os-note">Available for Windows and Linux.</p>
+  <div class="hero-image">
+<div class="demo wdoc" role="group" aria-label="Interactive document editor preview">
+<div class="col">
+ <div class="pnl"><div class="ph"><span class="lg2"><svg class="i"><use href="#s-h"/></svg></span>Styles</div>
+  <div class="ig"><button data-b="p">Normal</button><button data-b="h1">Heading 1</button><button data-b="h2">Heading 2</button><button data-b="blockquote">Quote</button></div></div>
+ <div class="pnl"><div class="ph"><span class="lg2"><svg class="i"><use href="#fmt"/></svg></span>Text</div>
+  <label class="row">Font<select id="font"><option value="'Inter',sans-serif">Sans</option><option value="Georgia,'Times New Roman',serif">Serif</option><option value="ui-monospace,Menlo,Consolas,monospace">Mono</option></select></label>
+  <label class="row">Size<select id="size"><option value="2">Small</option><option value="3" selected>Normal</option><option value="5">Large</option><option value="6">Huge</option></select></label>
+  <div class="row">Colour<span class="cols"><button data-col="#1f2937" style="--c:#1f2937" aria-label="Text colour #1f2937"></button><button data-col="#2a5bd7" style="--c:#2a5bd7" aria-label="Text colour #2a5bd7"></button><button data-col="#7c3aed" style="--c:#7c3aed" aria-label="Text colour #7c3aed"></button><button data-col="#e5484d" style="--c:#e5484d" aria-label="Text colour #e5484d"></button><button data-col="#f59e0b" style="--c:#f59e0b" aria-label="Text colour #f59e0b"></button><button data-col="#16a34a" style="--c:#16a34a" aria-label="Text colour #16a34a"></button></span></div></div>
+</div>
+<div class="mon"><div class="win">
+ <div class="tb"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i><b>Word Pro</b><span class="srch">Document 1</span></div>
+ <div class="tabs"><button class="on">Home</button><button>Insert</button><button>Layout</button><button>View</button></div>
+ <div class="rib"><button data-c="bold" title="Bold" aria-label="Bold"><svg class="i"><use href="#s-b"/></svg></button><button data-c="italic" title="Italic" aria-label="Italic"><svg class="i"><use href="#s-i"/></svg></button><button data-c="underline" title="Underline" aria-label="Underline"><svg class="i"><use href="#s-u"/></svg></button><i class="sp"></i><button data-c="insertUnorderedList" title="Bullets" aria-label="Bullets"><svg class="i"><use href="#s-ul"/></svg></button><button data-c="insertOrderedList" title="Numbering" aria-label="Numbering"><svg class="i"><use href="#s-ol"/></svg></button><i class="sp"></i><button data-c="justifyLeft" title="Align left" aria-label="Align left"><svg class="i"><use href="#s-al"/></svg></button><button data-c="justifyCenter" title="Align center" aria-label="Align center"><svg class="i"><use href="#s-ac"/></svg></button><button data-c="justifyRight" title="Align right" aria-label="Align right"><svg class="i"><use href="#s-ar"/></svg></button><i class="sp"></i><button data-c="undo" title="Undo" aria-label="Undo"><svg class="i"><use href="#s-undo"/></svg></button><button data-c="redo" title="Redo" aria-label="Redo"><svg class="i"><use href="#s-redo"/></svg></button></div>
+ <div class="pgw"><div id="pg" contenteditable="true" spellcheck="false" aria-label="Document"><h1>Meeting notes</h1><p>Click here and start typing. Try the buttons above to make text <b>bold</b>, <i>italic</i> or <u>underlined</u>.</p><h2>Things to do</h2><ul><li>Pick a heading style from the Styles panel</li><li>Change the font, size and colour</li><li>Watch the word count update</li></ul><blockquote>Good writing is rewriting.</blockquote></div></div>
+ <div class="sh"><span id="sbp">Page 1</span><span id="sb">0 words</span></div>
+</div></div>
+<div class="col">
+ <div class="pnl"><div class="ph"><span class="lg2"><svg class="i"><use href="#s-layout"/></svg></span>Document</div>
+  <ul class="ds"><li>Words<b id="s-w">0</b></li><li>Characters<b id="s-c">0</b></li><li>Paragraphs<b id="s-p">0</b></li><li>Reading time<b id="s-r">0 min</b></li></ul>
+  <div class="ring"><svg viewBox="0 0 60 60"><circle class="bg" cx="30" cy="30" r="26"/><circle class="fg" id="rg" cx="30" cy="30" r="26"/></svg><small><b id="rp">0%</b> of a<br>250 word goal</small></div></div>
+ <div class="pnl"><div class="ph"><span class="lg2"><svg class="i"><use href="#dl"/></svg></span>Export</div>
+  <div class="xb"><button data-x="copy"><svg class="i"><use href="#s-copy"/></svg> Copy text</button><button data-x="txt"><svg class="i"><use href="#dl"/></svg> Download .txt</button><button data-x="html"><svg class="i"><use href="#dl"/></svg> Download .html</button></div></div>
+</div>
+<p class="hint">Try it: click the page and type, pick a heading style, change the colour, or export your text.</p>
+</div>
+  </div>
+</header>
+
+<section class="purpose">
+  <div class="gallery">
+<div class="slot"><svg viewBox="0 0 600 340" role="img" aria-label="Rich text formatting"><rect width="600" height="340" fill="#fff"/><text x="40" y="46" font-size="16" font-weight="600" fill="#222">Rich formatting</text><text x="40" y="66" font-size="12" fill="#888">Fonts, colours, lists and alignment</text>
+<rect x="40" y="80" width="520" height="40" rx="10" fill="#f3f4f6"/>
+<g class="pulseb"><rect x="50" y="86" width="28" height="28" rx="7" fill="#2a5bd7"/><text x="64" y="106" font-size="15" font-weight="800" fill="#fff" text-anchor="middle">B</text></g>
+<text x="98" y="106" font-size="15" font-style="italic" font-weight="600" fill="#444" text-anchor="middle">I</text><text x="124" y="106" font-size="15" font-weight="600" fill="#444" text-anchor="middle" text-decoration="underline">U</text>
+<path d="M150 90v20" stroke="#d6d9de"/><path d="M166 94h18M166 100h18M166 106h18" stroke="#555" stroke-width="2" stroke-linecap="round"/><path d="M200 94h18M200 100h12M200 106h18" stroke="#555" stroke-width="2" stroke-linecap="round"/><path d="M234 94h18M240 100h12M234 106h18" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+<path d="M270 90v20" stroke="#d6d9de"/><circle cx="292" cy="100" r="7" fill="#222"/><circle cx="316" cy="100" r="7" fill="#2a5bd7"/><circle cx="340" cy="100" r="7" fill="#7c3aed"/><circle cx="364" cy="100" r="7" fill="#e5484d"/><circle cx="388" cy="100" r="7" fill="#f59e0b"/>
+<circle class="ring" cx="292" cy="100" r="11" fill="none" stroke="#2a5bd7" stroke-width="2"/>
+<rect x="40" y="132" width="520" height="186" rx="8" fill="#fff" stroke="#e3e3e3"/>
+<text x="64" y="170" font-size="22" font-weight="700" fill="#1f2937">Project plan</text>
+<text x="64" y="198" font-size="13" fill="#444">We will launch in <tspan font-weight="700">three phases</tspan>, starting with a <tspan font-style="italic" fill="#7c3aed">small beta</tspan>.</text>
+<rect class="selb" x="64" y="208" width="190" height="20" rx="3" fill="#2a5bd7" fill-opacity=".16"/><text x="68" y="222" font-size="13" fill="#444">Keep the scope <tspan fill="#2a5bd7" font-weight="600">small</tspan> and clear</text>
+<g font-size="13" fill="#444"><g class="bul" style="animation-delay:.3s"><circle cx="70" cy="250" r="2.500" fill="#2a5bd7"/><text x="82" y="254">Write the first draft</text></g><g class="bul" style="animation-delay:.8s"><circle cx="70" cy="272" r="2.500" fill="#2a5bd7"/><text x="82" y="276">Review with the team</text></g><g class="bul" style="animation-delay:1.3s"><circle cx="70" cy="294" r="2.500" fill="#2a5bd7"/><text x="82" y="298">Publish</text></g></g>
+<rect class="caret" x="132" y="285" width="2" height="15" fill="#2a5bd7"/></svg></div>
+<div class="slot"><svg viewBox="0 0 600 340" role="img" aria-label="Styles and document outline"><rect width="600" height="340" fill="#fff"/><text x="40" y="46" font-size="16" font-weight="600" fill="#222">Styles & outline</text><text x="40" y="66" font-size="12" fill="#888">Headings that organise your document</text>
+<rect x="40" y="82" width="190" height="236" rx="10" fill="#f6f8fc" stroke="#e3e8f3"/>
+<text x="56" y="106" font-size="11" font-weight="700" fill="#6b7a99">OUTLINE</text>
+<rect class="hl2" x="48" y="118" width="174" height="30" rx="6" fill="#e4ecff"/>
+<text x="60" y="138" font-size="13" font-weight="700" fill="#2a5bd7">Introduction</text>
+<text x="76" y="176" font-size="12.5" fill="#444">Goals</text><text x="76" y="204" font-size="12.5" fill="#444">Timeline</text>
+<text x="60" y="232" font-size="13" font-weight="700" fill="#333">Next steps</text>
+<rect x="250" y="82" width="310" height="236" rx="8" fill="#fff" stroke="#e3e3e3"/>
+<text x="272" y="120" font-size="24" font-weight="700" fill="#1f2937">Introduction</text>
+<g fill="#e5e7eb"><rect class="wr" style="--d:.2s" x="272" y="136" width="260" height="8" rx="4"/><rect class="wr" style="--d:.45s" x="272" y="152" width="230" height="8" rx="4"/><rect class="wr" style="--d:.7s" x="272" y="168" width="250" height="8" rx="4"/></g>
+<text x="272" y="208" font-size="17" font-weight="700" fill="#2a5bd7">Goals</text>
+<g fill="#e5e7eb"><rect class="wr" style="--d:1s" x="272" y="222" width="240" height="8" rx="4"/><rect class="wr" style="--d:1.25s" x="272" y="238" width="200" height="8" rx="4"/></g>
+<rect x="272" y="262" width="3" height="34" fill="#2a5bd7"/><text x="286" y="284" font-size="13" font-style="italic" fill="#5b6475">A short quote stands out.</text></svg></div>
+<div class="slot"><svg viewBox="0 0 600 340" role="img" aria-label="Page layout"><rect width="600" height="340" fill="#fff"/><text x="40" y="46" font-size="16" font-weight="600" fill="#222">Page layout</text><text x="40" y="66" font-size="12" fill="#888">Margins, headers, footers and page numbers</text>
+<rect x="150" y="84" width="300" height="12" fill="#f3f4f6"/><g stroke="#aab" stroke-width="1"><path d="M150 96v-6M175 96v-4M200 96v-6M225 96v-4M250 96v-6M275 96v-4M300 96v-6M325 96v-4M350 96v-6M375 96v-4M400 96v-6M425 96v-4M450 96v-6"/></g>
+<path class="mk" d="M180 98l5-8h-10z" fill="#2a5bd7"/>
+<rect x="150" y="100" width="300" height="218" rx="4" fill="#fff" stroke="#e3e3e3"/>
+<rect class="dash" x="180" y="124" width="240" height="170" fill="none" stroke="#2a5bd7" stroke-opacity=".6"/>
+<text x="180" y="116" font-size="10" fill="#8a94a8">Header: Project plan</text>
+<rect class="wr" style="--d:.1s" x="192" y="140" width="130" height="14" rx="3" fill="#cfd7e8"/>
+<g fill="#e5e7eb"><rect class="wr" style="--d:.4s" x="192" y="168" width="216" height="7" rx="3"/><rect class="wr" style="--d:.6s" x="192" y="182" width="200" height="7" rx="3"/><rect class="wr" style="--d:.8s" x="192" y="196" width="216" height="7" rx="3"/><rect class="wr" style="--d:1s" x="192" y="210" width="180" height="7" rx="3"/><rect class="wr" style="--d:1.3s" x="192" y="232" width="216" height="7" rx="3"/><rect class="wr" style="--d:1.5s" x="192" y="246" width="190" height="7" rx="3"/><rect class="wr" style="--d:1.7s" x="192" y="260" width="210" height="7" rx="3"/></g>
+<text class="pgA" x="300" y="311" font-size="10" fill="#8a94a8" text-anchor="middle">Page 1 of 3</text><text class="pgB" x="300" y="311" font-size="10" fill="#8a94a8" text-anchor="middle">Page 2 of 3</text>
+<g font-size="11" fill="#6b7a99"><text x="40" y="150">Margins</text><text x="40" y="168" font-weight="700" fill="#2a5bd7">2.5 cm</text><text x="470" y="150">Page size</text><text x="470" y="168" font-weight="700" fill="#2a5bd7">A4</text></g></svg></div>
+<div class="slot"><svg viewBox="0 0 600 340" role="img" aria-label="AutoSave and recovery"><rect width="600" height="340" fill="#fff"/><text x="40" y="46" font-size="16" font-weight="600" fill="#222">AutoSave & recovery</text><text x="40" y="66" font-size="12" fill="#888">Your work is saved as you write</text>
+<rect x="40" y="82" width="270" height="236" rx="10" fill="#fff" stroke="#e3e3e3"/><rect x="40" y="82" width="270" height="34" rx="10" fill="#f3f4f6"/><rect x="40" y="100" width="270" height="16" fill="#f3f4f6"/>
+<text x="56" y="104" font-size="12" font-weight="600" fill="#333">Quarterly report</text>
+<g class="pgA"><rect x="196" y="90" width="104" height="18" rx="9" fill="#fff4e0"/><text x="248" y="103" font-size="10.5" font-weight="600" fill="#b45309" text-anchor="middle">Saving...</text></g>
+<g class="pgB"><rect x="196" y="90" width="104" height="18" rx="9" fill="#e4ecff"/><text x="248" y="103" font-size="10.5" font-weight="600" fill="#2a5bd7" text-anchor="middle">All changes saved</text></g>
+<text x="60" y="148" font-size="16" font-weight="700" fill="#1f2937">Summary</text>
+<g fill="#e5e7eb"><rect class="wr" style="--d:.2s" x="60" y="162" width="220" height="7" rx="3"/><rect class="wr" style="--d:.5s" x="60" y="177" width="200" height="7" rx="3"/><rect class="wr" style="--d:.8s" x="60" y="192" width="214" height="7" rx="3"/><rect class="wr" style="--d:1.1s" x="60" y="207" width="150" height="7" rx="3"/></g>
+<rect class="caret" x="216" y="203" width="2" height="14" fill="#2a5bd7"/>
+<text x="60" y="256" font-size="10.5" fill="#8a94a8">AutoSave ticks</text>
+<path d="M60 276H290" stroke="#e3e3e3" stroke-width="3" stroke-linecap="round"/><rect class="wr" style="--d:.2s" x="60" y="273" width="230" height="6" rx="3" fill="#2a5bd7" fill-opacity=".35"/>
+<g fill="#2a5bd7"><circle cx="105" cy="276" r="4"/><circle cx="175" cy="276" r="4"/><circle cx="245" cy="276" r="4"/></g>
+<g class="card4" style="--d:.6s"><rect x="330" y="110" width="230" height="156" rx="12" fill="#fff" stroke="#c4d1f3" stroke-width="1.5"/>
+<text x="348" y="140" font-size="13" font-weight="700" fill="#1f2937">Recover unsaved work?</text>
+<text x="348" y="160" font-size="11" fill="#6b7280">Word Pro found a recovery copy of</text><text x="348" y="175" font-size="11" font-weight="600" fill="#2a5bd7">Quarterly report</text>
+<rect x="348" y="196" width="92" height="30" rx="15" fill="#2a5bd7"/><text x="394" y="216" font-size="12" font-weight="600" fill="#fff" text-anchor="middle">Recover</text>
+<rect x="450" y="196" width="92" height="30" rx="15" fill="#f3f4f6"/><text x="496" y="216" font-size="12" font-weight="600" fill="#555" text-anchor="middle">Discard</text></g>
+<text x="330" y="292" font-size="11" fill="#888">Recovery copies never overwrite your file</text></svg></div>
+<div class="slot"><svg viewBox="0 0 600 340" role="img" aria-label="Save options"><rect width="600" height="340" fill="#fff"/><text x="40" y="46" font-size="16" font-weight="600" fill="#222">Save options</text><text x="40" y="66" font-size="12" fill="#888">Save, Save As and Save a Copy</text>
+<rect x="40" y="82" width="520" height="236" rx="12" fill="#fff" stroke="#e3e3e3"/>
+<text x="62" y="112" font-size="15" font-weight="700" fill="#1f2937">Save As</text>
+<text x="62" y="148" font-size="12" fill="#6b7280">Name</text>
+<rect x="124" y="130" width="410" height="28" rx="7" fill="#f6f8fc" stroke="#dde3f0"/>
+<text x="136" y="149" font-size="13" fill="#1f2937">Quarterly report</text><rect class="unw" x="132" y="134" width="230" height="20" fill="#f6f8fc"/>
+<text x="62" y="196" font-size="12" fill="#6b7280">Format</text>
+<rect x="124" y="172" width="410" height="112" rx="8" fill="#fff" stroke="#dde3f0"/>
+<rect class="hl6" x="128" y="176" width="402" height="24" rx="6" fill="#e4ecff"/>
+<g font-size="12.5" fill="#333"><text x="140" y="193">Word Pro document</text><text x="140" y="221">PDF</text><text x="140" y="249">HTML</text><text x="140" y="277">Plain text</text></g>
+<rect x="364" y="290" width="76" height="22" rx="11" fill="#f3f4f6"/><text x="402" y="305" font-size="11.5" font-weight="600" fill="#555" text-anchor="middle">Cancel</text>
+<g class="pulseb"><rect x="452" y="290" width="82" height="22" rx="11" fill="#2a5bd7"/><text x="493" y="305" font-size="11.5" font-weight="700" fill="#fff" text-anchor="middle">Save</text></g></svg></div>
+<div class="slot"><svg viewBox="0 0 600 340" role="img" aria-label="Saving and exporting"><rect width="600" height="340" fill="#fff"/><text x="40" y="46" font-size="16" font-weight="600" fill="#222">Save & export</text><text x="40" y="66" font-size="12" fill="#888">Take your document anywhere</text>
+<rect class="docp" x="60" y="120" width="130" height="170" rx="10" fill="#fff" stroke="#2a5bd7" stroke-width="2"/><rect x="76" y="138" width="70" height="10" rx="3" fill="#cfd7e8"/>
+<g fill="#e5e7eb"><rect x="76" y="162" width="98" height="6" rx="3"/><rect x="76" y="176" width="88" height="6" rx="3"/><rect x="76" y="190" width="98" height="6" rx="3"/><rect x="76" y="204" width="78" height="6" rx="3"/><rect x="76" y="226" width="98" height="6" rx="3"/><rect x="76" y="240" width="84" height="6" rx="3"/></g>
+<text x="125" y="276" font-size="11" font-weight="600" fill="#2a5bd7" text-anchor="middle">My document</text>
+<g stroke="#b9c6e6" stroke-width="2" fill="none" stroke-linecap="round"><path class="pth" pathLength="1" style="--d:.2s" d="M200 205C250 205 250 140 310 140"/><path class="pth" pathLength="1" style="--d:.5s" d="M200 205H310"/><path class="pth" pathLength="1" style="--d:.8s" d="M200 205C250 205 250 270 310 270"/></g>
+<g fill="#2a5bd7"><circle r="4"><animateMotion dur="2.6s" repeatCount="indefinite" path="M200 205C250 205 250 140 310 140"/></circle><circle r="4"><animateMotion dur="2.2s" begin=".5s" repeatCount="indefinite" path="M200 205H310"/></circle><circle r="4"><animateMotion dur="2.6s" begin=".9s" repeatCount="indefinite" path="M200 205C250 205 250 270 310 270"/></circle></g>
+<g font-size="13" font-weight="700"><g class="card4" style="--d:.5s"><rect x="310" y="112" width="220" height="56" rx="12" fill="#fff5f5" stroke="#f3c4c4"/><text x="334" y="146" fill="#d23c3c">PDF</text><text x="380" y="146" font-size="11" font-weight="500" fill="#8a6a6a">Share or print</text></g>
+<g class="card4" style="--d:.9s"><rect x="310" y="177" width="220" height="56" rx="12" fill="#f3f6ff" stroke="#c4d1f3"/><text x="334" y="211" fill="#2a5bd7">HTML</text><text x="388" y="211" font-size="11" font-weight="500" fill="#6a7a9a">Publish on the web</text></g>
+<g class="card4" style="--d:1.3s"><rect x="310" y="242" width="220" height="56" rx="12" fill="#f6f8f6" stroke="#d3dcd3"/><text x="334" y="276" fill="#4a5a4a">TXT</text><text x="376" y="276" font-size="11" font-weight="500" fill="#7a8a7a">Plain text anywhere</text></g></g></svg></div>
+</div>
+  <div class="info">
+    <p class="label">Purpose</p>
+    <h2>All the tools you need for<br>focused writing</h2>
+    <div class="copy">
+      <p>Heavy word processors cost too much, and simple editors don’t feel complete enough to stay in flow. That’s why I built Word Pro.</p>
+      <p>The goal was a full-featured word processor that is completely free and open source, built around how you actually write: clear formatting, good structure, safe saving and easy sharing.</p>
+      <p>Because it’s open source, you can download the project and add, remove, or change any feature to fit your needs.</p>
+    </div>
+    <!-- EDIT: replace these feature lines with the real features of Word Pro -->
+    <ul class="features">
+<li><svg class="i"><use href="#doc"/></svg><span><b>Writing &amp; Editing</b><small>Open a clean page and start typing. Word Pro gives you rich text editing with undo and redo, cut, copy and paste, and find and replace, so you can rewrite freely without losing a thought. The page stays clear of clutter so the focus stays on your words.</small></span></li>
+<li><svg class="i"><use href="#fmt"/></svg><span><b>Text Formatting</b><small>Choose fonts and sizes, apply bold, italic and underline, colour your text, align it left, centre or right, and build bullet and numbered lists. The formatting buttons show the style of the text under your cursor, so you always know what is applied before you change it.</small></span></li>
+<li><svg class="i"><use href="#s-h"/></svg><span><b>Styles &amp; Structure</b><small>Headings, paragraph styles and quotes give every document a clear shape. Use headings for titles and sections, then move around long documents using the outline instead of scrolling for minutes. Good structure also makes your document easier to read, skim and share.</small></span></li>
+<li><svg class="i"><use href="#s-layout"/></svg><span><b>Page Layout</b><small>Set the page size and margins, add headers and footers, and number your pages. What you see on screen follows the page you will print or export, so the layout you design is the layout your readers get.</small></span></li>
+<li><svg class="i"><use href="#s-tbl"/></svg><span><b>Tables &amp; Images</b><small>Insert tables for structured information and pictures for illustration. Select an image to move it, or drag a corner to resize it, and keep writing in the text around it. Tables and images stay where you put them when you save and reopen the document.</small></span></li>
+<li><svg class="i"><use href="#save"/></svg><span><b>Saving Your Work</b><small>Save, Save As and Save a Copy cover every way you keep a document. Save updates the file you are working on, Save As lets you choose a new name and location, and Save a Copy keeps your original untouched. A clear unsaved-changes indicator shows when your latest edits are not stored yet, and Word Pro asks before closing a document so nothing is lost by accident. Recent documents bring your last files back in one click.</small></span></li>
+<li><svg class="i"><use href="#save"/></svg><span><b>AutoSave &amp; Recovery</b><small>AutoSave stores your work in the background at an interval you choose, so a long writing session never depends on remembering to press Save. If the app closes unexpectedly, Word Pro keeps a recovery copy and offers to restore it the next time you open it. Recovery copies are kept separate from your original file, so your saved version is never overwritten unless you decide to.</small></span></li>
+<li><svg class="i"><use href="#dl"/></svg><span><b>Export &amp; Sharing</b><small>Export your finished document to PDF for sharing and printing, HTML for the web, or plain text for use anywhere. Each export keeps your headings, lists and emphasis, so what you send looks like what you wrote.</small></span></li>
+<li><svg class="i"><use href="#keys"/></svg><span><b>Productivity</b><small>A live word count, character count and reading time update as you type, and keyboard shortcuts cover the actions you use most. Zoom the page to suit your screen, and switch between light and dark mode for comfortable writing at any hour.</small></span></li>
+<li><svg class="i"><use href="#tech"/></svg><span><b>Free &amp; Open Source</b><small>Word Pro is free and open source. Read the code, report problems, add the features you want or remove the ones you do not, and release your own build. It is available for Windows and Linux, and it is yours to keep and change.</small></span></li>
+    </ul>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-brand">
+    <div class="logo"><svg class="i"><use href="#doc"/></svg></div>
+    <span>Word Pro</span>
+  </div>
+  <div class="buttons">
+    <a class="os-btn" data-os="win" href="#"><svg class="i os"><use href="#os-win"/></svg>Windows</a><a class="os-btn" data-os="linux" href="#"><svg class="i os"><use href="#os-linux"/></svg>Linux</a>
+    <a class="btn btn-github" data-gh href="#" target="_blank" rel="noopener"><svg class="i"><use href="#gh"/></svg>View on GitHub</a>
+  </div>
+</footer>
+
+<p class="legal">Microsoft, Microsoft Office and Microsoft Word are trademarks of the Microsoft group of companies. Word Pro is an independent project. It is not affiliated with, endorsed by, or sponsored by Microsoft, Microsoft Office or Microsoft Word.</p>
+
+<script>
+/* ===== DOWNLOAD LINKS: paste your links between the quotes ===== */
+var LINKS={
+  win:'https://github.com/nexcartpos-alt/word-pro/releases/download/v1.0/WordPro-Windows.zip',
+  linux:'https://github.com/nexcartpos-alt/word-pro/releases/download/v1.0/WordPro-Linux.tar.gz',
+  github:'https://github.com/nexcartpos-alt/word-pro'
+};
+(function(){
+var root=document.documentElement,mq=matchMedia('(prefers-color-scheme: dark)'),tb=document.getElementById('theme');
+function set(t){root.dataset.theme=t;tb.setAttribute('aria-pressed',t==='dark')}
+set(mq.matches?'dark':'light');
+tb.addEventListener('click',function(){var next=root.dataset.theme==='dark'?'light':'dark',r=tb.getBoundingClientRect();
+  root.style.setProperty('--tx',(r.left+r.width/2)+'px');root.style.setProperty('--ty',(r.top+r.height/2)+'px');
+  if(document.startViewTransition)document.startViewTransition(function(){set(next)});else set(next)});
+
+// download buttons
+var s=((navigator.userAgentData&&navigator.userAgentData.platform)||navigator.platform||'')+' '+(navigator.userAgent||''),
+    os=/iPhone|iPad|Android/i.test(s)?'win':/Windows|Win32|Win64/i.test(s)?'win':/Mac/i.test(s)?'mac':/Linux|X11|CrOS/i.test(s)?'linux':'win',
+    NAMES={win:'Windows',mac:'macOS',linux:'Linux'};
+[].forEach.call(document.querySelectorAll('[data-os]'),function(a){
+  var auto=a.dataset.os==='auto',k=auto?os:a.dataset.os,url=LINKS[k];
+  if(auto){if(!url){k=LINKS.win?'win':LINKS.mac?'mac':LINKS.linux?'linux':'win';url=LINKS[k]}
+    a.querySelector('.dl-t').textContent='Download for '+NAMES[k]}
+  if(url)a.href=url;else a.addEventListener('click',function(e){e.preventDefault()});
+  if(!auto&&k===os)a.classList.add('cur');
+});
+[].forEach.call(document.querySelectorAll('[data-gh]'),function(a){if(LINKS.github)a.href=LINKS.github;else a.style.display='none'});
+
+// headline words slide up
+var h1=document.querySelector('.hero h1'),k=0;
+[].slice.call(h1.childNodes).forEach(function(n){if(n.nodeType!==3)return;var f=document.createDocumentFragment(),ws=n.textContent.split(/\s+/).filter(Boolean);
+  ws.forEach(function(w,i){var o=document.createElement('span'),q=document.createElement('span');o.className='w';q.textContent=w;q.style.animationDelay=(.15+k++*.13)+'s';o.appendChild(q);f.appendChild(o);if(i<ws.length-1)f.appendChild(document.createTextNode(' '))});n.replaceWith(f)});
+// floating words behind the hero
+var st=document.querySelector('.strip'),fv=['Draft','Heading','Bold','Notes','Intro','Page 1','Edit','Ideas','Chapter','Title','Quote','Aa','Outline','Review'];
+fv.forEach(function(t,i){var f=document.createElement('span');f.className='fl';f.textContent=t;f.style.left=(3+i*7+Math.random()*3)+'%';f.style.top=(30+Math.random()*60)+'%';f.style.fontSize=(12+Math.random()*10)+'px';f.style.setProperty('--d',(9+Math.random()*8)+'s');f.style.setProperty('--dl',(-Math.random()*12)+'s');st.appendChild(f)});
+// words pop up behind the download button on hover
+[].forEach.call(document.querySelectorAll('.btn-download'),function(b){var v=['Aa','Draft','Title','Bold','Intro','Page','Edit','Quote'],w=document.createElement('span');w.className='nums';w.setAttribute('aria-hidden','true');
+  v.forEach(function(t,i){var e=document.createElement('i');e.textContent=t;e.style.left=(6+i*11+Math.random()*4)+'%';e.style.top=(14+(i%2)*40+Math.random()*12)+'%';e.style.fontSize=(10+Math.random()*5)+'px';e.style.animationDelay=(Math.random()*.7)+'s';w.appendChild(e)});b.insertBefore(w,b.firstChild)});
+// reveal on scroll + progress bar
+var io=new IntersectionObserver(function(es){es.filter(function(e){return e.isIntersecting}).forEach(function(e,i){var n=e.target;n.style.setProperty('--rd',(i*.09)+'s');n.classList.add('in');io.unobserve(n);setTimeout(function(){n.style.setProperty('--rd','0s')},2200)})},{threshold:.15});
+['.slot','.info .label','.info h2','.copy p','.features li','.footer-brand','.footer .buttons','.legal'].forEach(function(q){[].forEach.call(document.querySelectorAll(q),function(n){n.classList.add('rv');io.observe(n)})});
+var pg0=document.createElement('div');pg0.className='prog';document.body.appendChild(pg0);
+function sp(){var m=document.documentElement.scrollHeight-innerHeight;pg0.style.transform='scaleX('+(m>0?Math.min(1,scrollY/m):0)+')'}
+addEventListener('scroll',sp,{passive:true});sp();
+
+// ===== interactive editor =====
+var $=function(q){return document.querySelector(q)},pg=$('#pg'),demo=$('.demo'),GOAL=250;
+function stats(){var t=(pg.innerText||'').replace(/\u00a0/g,' ').trim(),w=t?t.split(/\s+/).length:0,ch=t.length,p=pg.querySelectorAll('p,li,h1,h2,blockquote').length,rt=w?Math.max(1,Math.ceil(w/200)):0,pc=Math.min(1,w/GOAL);
+  $('#s-w').textContent=w;$('#s-c').textContent=ch;$('#s-p').textContent=p;$('#s-r').textContent=rt+' min';$('#sb').textContent=w+(w===1?' word':' words');
+  $('#rg').style.strokeDashoffset=163.4*(1-pc);$('#rp').textContent=Math.round(pc*100)+'%'}
+function state(){[].forEach.call(demo.querySelectorAll('[data-c]'),function(b){var c=b.dataset.c;if(c==='undo'||c==='redo')return;var on=false;try{on=document.queryCommandState(c)}catch(e){}b.classList.toggle('on',!!on)})}
+function dl(name,type,data){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
+demo.addEventListener('mousedown',function(e){if(e.target.closest('button')&&!e.target.closest('select'))e.preventDefault()});
+demo.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var d=b.dataset;
+  if(d.c){pg.focus();document.execCommand(d.c,false,null)}
+  else if(d.b){pg.focus();document.execCommand('formatBlock',false,'<'+d.b+'>')}
+  else if(d.col){pg.focus();document.execCommand('foreColor',false,d.col)}
+  else if(d.x==='copy'){var t=pg.innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.lastChild.textContent=' Copied'},function(){b.lastChild.textContent=' Select and copy manually'});setTimeout(function(){b.lastChild.textContent=' Copy text'},1400)}
+  else if(d.x==='txt')dl('document.txt','text/plain',pg.innerText);
+  else if(d.x==='html')dl('document.html','text/html','<!doctype html><meta charset="utf-8"><title>Document</title><body>'+pg.innerHTML+'</body>');
+  else if(b.parentNode.classList.contains('tabs')){[].forEach.call(demo.querySelectorAll('.tabs button'),function(x){x.classList.toggle('on',x===b)});return}
+  stats();state()});
+$('#font').addEventListener('change',function(e){pg.style.fontFamily=e.target.value});
+$('#size').addEventListener('change',function(e){pg.focus();document.execCommand('fontSize',false,e.target.value);stats()});
+['input','keyup','mouseup'].forEach(function(ev){pg.addEventListener(ev,function(){stats();state()})});
+document.addEventListener('selectionchange',function(){if(document.activeElement===pg)state()});
+if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+  var tx=0,ty=0,cx=0,cy=0,raf=0;
+  function loop(){cx+=(tx-cx)*.09;cy+=(ty-cy)*.09;demo.style.setProperty('--mx',cx.toFixed(3));demo.style.setProperty('--my',cy.toFixed(3));raf=(Math.abs(tx-cx)>.001||Math.abs(ty-cy)>.001)?requestAnimationFrame(loop):0}
+  demo.addEventListener('pointermove',function(e){var r=demo.getBoundingClientRect();tx=(e.clientX-r.left)/r.width*2-1;ty=(e.clientY-r.top)/r.height*2-1;if(!raf)raf=requestAnimationFrame(loop)});
+  demo.addEventListener('pointerleave',function(){tx=0;ty=0;if(!raf)raf=requestAnimationFrame(loop)})}
+stats();
+})();
+</script>
+<script>
+/* Download click tracking: works with GoatCounter, Plausible or Umami once their one-line script is added to <head>. Does nothing otherwise. */
+document.addEventListener('click',function(e){
+  var a=e.target.closest('[data-os]');if(!a||a.classList.contains('soon'))return;
+  var f=(a.getAttribute('href')||'').split('/').pop()||a.dataset.os;
+  try{
+    if(window.goatcounter&&window.goatcounter.count)window.goatcounter.count({path:'download-'+f,title:'Download '+f,event:true});
+    if(window.plausible)window.plausible('Download',{props:{file:f}});
+    if(window.umami&&window.umami.track)window.umami.track('download',{file:f});
+  }catch(x){}
+});
+</script>
+</body>
+</html>
