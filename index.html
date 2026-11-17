@@ -403,8 +403,8 @@ body{animation:pageIn .9s ease both}
     <a class="btn btn-download" data-os="auto" href="#"><svg class="i"><use href="#dl"/></svg><span class="dl-t">Download</span></a>
     <a class="btn btn-github" data-gh href="#" target="_blank" rel="noopener"><svg class="i"><use href="#gh"/></svg>View on GitHub</a>
   </div>
-  <div class="os-row" aria-label="Download for your system"><span>Download for</span><a class="os-btn" data-os="win" href="#"><svg class="i os"><use href="#os-win"/></svg>Windows</a><a class="os-btn" data-os="linux" href="#"><svg class="i os"><use href="#os-linux"/></svg>Linux</a></div>
-  <p class="os-note">Available for Windows and Linux.</p>
+  <div class="os-row" aria-label="Download for your system"><span>Download for</span><a class="os-btn" data-os="win" href="#"><svg class="i os"><use href="#os-win"/></svg>Windows</a><a class="os-btn" data-os="mac" href="#"><svg class="i os"><use href="#os-mac"/></svg>macOS</a><a class="os-btn" data-os="linux" href="#"><svg class="i os"><use href="#os-linux"/></svg>Linux</a></div>
+  <p class="os-note" id="osn"></p>
   <div class="hero-image">
 <div class="demo wdoc" role="group" aria-label="Interactive document editor preview">
 <div class="col">
@@ -530,7 +530,7 @@ body{animation:pageIn .9s ease both}
 <li><svg class="i"><use href="#save"/></svg><span><b>AutoSave &amp; Recovery</b><small>AutoSave stores your work in the background at an interval you choose, so a long writing session never depends on remembering to press Save. If the app closes unexpectedly, Word Pro keeps a recovery copy and offers to restore it the next time you open it. Recovery copies are kept separate from your original file, so your saved version is never overwritten unless you decide to.</small></span></li>
 <li><svg class="i"><use href="#dl"/></svg><span><b>Export &amp; Sharing</b><small>Export your finished document to PDF for sharing and printing, HTML for the web, or plain text for use anywhere. Each export keeps your headings, lists and emphasis, so what you send looks like what you wrote.</small></span></li>
 <li><svg class="i"><use href="#keys"/></svg><span><b>Productivity</b><small>A live word count, character count and reading time update as you type, and keyboard shortcuts cover the actions you use most. Zoom the page to suit your screen, and switch between light and dark mode for comfortable writing at any hour.</small></span></li>
-<li><svg class="i"><use href="#tech"/></svg><span><b>Free &amp; Open Source</b><small>Word Pro is free and open source. Read the code, report problems, add the features you want or remove the ones you do not, and release your own build. It is available for Windows and Linux, and it is yours to keep and change.</small></span></li>
+<li><svg class="i"><use href="#tech"/></svg><span><b>Free &amp; Open Source</b><small>Word Pro is free and open source. Read the code, report problems, add the features you want or remove the ones you do not, and release your own build. It is built for Windows, macOS and Linux, and it is yours to keep and change.</small></span></li>
     </ul>
   </div>
 </section>
@@ -541,7 +541,7 @@ body{animation:pageIn .9s ease both}
     <span>Word Pro</span>
   </div>
   <div class="buttons">
-    <a class="os-btn" data-os="win" href="#"><svg class="i os"><use href="#os-win"/></svg>Windows</a><a class="os-btn" data-os="linux" href="#"><svg class="i os"><use href="#os-linux"/></svg>Linux</a>
+    <a class="os-btn" data-os="win" href="#"><svg class="i os"><use href="#os-win"/></svg>Windows</a><a class="os-btn" data-os="mac" href="#"><svg class="i os"><use href="#os-mac"/></svg>macOS</a><a class="os-btn" data-os="linux" href="#"><svg class="i os"><use href="#os-linux"/></svg>Linux</a>
     <a class="btn btn-github" data-gh href="#" target="_blank" rel="noopener"><svg class="i"><use href="#gh"/></svg>View on GitHub</a>
   </div>
 </footer>
@@ -551,9 +551,10 @@ body{animation:pageIn .9s ease both}
 <script>
 /* ===== DOWNLOAD LINKS: paste your links between the quotes ===== */
 var LINKS={
-  win:'https://github.com/nexcartpos-alt/word-pro/releases/download/v1.0/WordPro-Windows.zip',
-  linux:'https://github.com/nexcartpos-alt/word-pro/releases/download/v1.0/WordPro-Linux.tar.gz',
-  github:'https://github.com/nexcartpos-alt/word-pro'
+  win:'https://github.com/nexcartpos-alt/Wordpro/releases/download/v0.3.0/word-pro-v0.3.0-windows-x64-setup.exe',
+  mac:'',
+  linux:'https://github.com/nexcartpos-alt/Wordpro/releases/download/v0.3.0/word-pro-v0.3.0-linux-x64.tar.gz',
+  github:''
 };
 (function(){
 var root=document.documentElement,mq=matchMedia('(prefers-color-scheme: dark)'),tb=document.getElementById('theme');
@@ -571,9 +572,11 @@ var s=((navigator.userAgentData&&navigator.userAgentData.platform)||navigator.pl
   var auto=a.dataset.os==='auto',k=auto?os:a.dataset.os,url=LINKS[k];
   if(auto){if(!url){k=LINKS.win?'win':LINKS.mac?'mac':LINKS.linux?'linux':'win';url=LINKS[k]}
     a.querySelector('.dl-t').textContent='Download for '+NAMES[k]}
-  if(url)a.href=url;else a.addEventListener('click',function(e){e.preventDefault()});
+  if(url)a.href=url;else{a.href='#';a.classList.add('soon');a.title='Coming soon';a.addEventListener('click',function(e){e.preventDefault()})}
   if(!auto&&k===os)a.classList.add('cur');
 });
+var have=['win','mac','linux'].filter(function(x){return LINKS[x]}).map(function(x){return NAMES[x]}),osn=document.getElementById('osn');
+if(have.length===3)osn.style.display='none';else osn.textContent='Available for '+have.join(' and ')+'.';
 [].forEach.call(document.querySelectorAll('[data-gh]'),function(a){if(LINKS.github)a.href=LINKS.github;else a.style.display='none'});
 
 // headline words slide up
